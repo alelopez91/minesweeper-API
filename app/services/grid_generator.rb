@@ -1,17 +1,17 @@
 class GridGenerator
-  BOARD_SIZE = 10 # square
+  BOARD_SIZE = 10
+  TOTAL_CELLS = BOARD_SIZE * BOARD_SIZE
   MINE = 'X'
   MINE_FLAG = '?'
   UNKNOWN_CELL = 'U'
-  TOTAL_CELLS = BOARD_SIZE * BOARD_SIZE
   SAFE_CELL = 'S'
   DIFFICULTY = 0.8 # between 0 and 1; the probability that the cell is not a mine.
 
   attr_reader :visible_grid, :mine_grid
 
-  def initialize
-    @visible_grid = generate_clean_grid
-    @mine_grid = generate_grid_with_mines(@visible_grid)
+  def initialize(visible_grid = nil, mine_grid = nil)
+    @visible_grid = visible_grid || generate_clean_grid
+    @mine_grid = mine_grid || generate_grid_with_mines(@visible_grid)
   end
 
   def generate_clean_grid
@@ -25,6 +25,14 @@ class GridGenerator
       end
     end
     mine_array
+  end
+
+  def untouched_cells
+    @visible_grid.flatten.count(UNKNOWN_CELL)
+  end
+
+  def number_of_mines
+    @mine_grid.flatten.count(MINE)
   end
 
   private

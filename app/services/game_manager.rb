@@ -1,29 +1,34 @@
 class GameManager
   attr_reader :grid
-  attr_accessor :game_lost
 
-  def initialize
-    @grid = GridGenerator.new
-    @game_lost = false
+  def initialize(grid)
+    @grid = grid
     @safe_cells = []
   end
 
+  def play_turn(x_coord, y_coord, game)
+    guess = CoordinatePair.new(x_coord, y_coord)
+
+    reveal_guess(guess, @grid.visible_grid)
+    game.update(visible_grid: @grid.visible_grid)
+
+    if mine?(guess)
+      result = 'Game Over'
+      game.end
+    elsif won?
+      result = 'You Won'
+      game.end
+    else
+      result = 'Next Movement'
+    end
+
+    result
+  end
+
   def won?
-    untouched_cells = @grid.visible_grid.flatten.count(GridGenerator::HIDDEN_CELL)
-    number_of_mines = @grid.mine_grid.flatten.count(GridGenerator::MINE)
+    untouched_cells = @grid.untouched_cells
+    number_of_mines = @grid.number_of_mines
     untouched_cells == number_of_mines
-  end
-
-  def in_progress?
-    !(won? || lost?)
-  end
-
-  def lost?
-    @game_lost
-  end
-
-  def guess_valid?(input)
-    number?(input) && number_in_range?(input)
   end
 
   def mine?(guess)
@@ -32,18 +37,18 @@ class GameManager
     @grid.mine_grid[coordinates.y][coordinates.x] == GridGenerator::MINE
   end
 
-  def reveal_guess(guess, board)
+  def reveal_guess(guess, grid)
     coordinates = axis_adjusted_coordinates(guess)
     number = number_of_surrounding_mines(coordinates)
 
     if mine?(guess)
-      board[coordinates.y][coordinates.x] = GridGenerator::MINE
+      grid[coordinates.y][coordinates.x] = GridGenerator::MINE
     elsif number == 0
-      board[coordinates.y][coordinates.x] = GridGenerator::EMPTY_CELL
+      grid[coordinates.y][coordinates.x] = GridGenerator::SAFE_CELL
       @safe_cells.push(coordinates)
       show_empty_neighbours(coordinates)
     else
-      board[coordinates.y][coordinates.x] = number
+      grid[coordinates.y][coordinates.x] = number
     end
   end
 
