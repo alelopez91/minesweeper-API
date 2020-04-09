@@ -2,7 +2,14 @@ module Api
   module V1
     class GamesController < ApplicationController
       def create
-        render json: { msg: 'Games#create' }, status: :ok, adapter: :json
+        game = Game.new
+
+        if game.save
+          render json: { msg: 'Game started', game: game }, status: :ok, adapter: :json
+        else
+          render json: { msg: game.errors, game: game }, status: :bad_request, adapter: :json
+        end
+
       end
 
       def update
