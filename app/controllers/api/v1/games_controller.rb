@@ -2,7 +2,10 @@ module Api
   module V1
     class GamesController < ApplicationController
       def create
-        game = Game.new
+        @game_manager = GameManager.new
+        @grid = @game_manager.grid
+
+        game = Game.new(visible_grid: @grid.visible_grid, mine_grid: @grid.mine_grid)
 
         if game.save
           render json: { msg: 'Game started', game: game }, status: :ok, adapter: :json
