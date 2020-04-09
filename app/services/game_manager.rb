@@ -7,7 +7,7 @@ class GameManager
   end
 
   def play_turn(x_coord, y_coord, game)
-    guess = CoordinatePair.new(x_coord, y_coord)
+    guess = CoordinatePair.new(x_coord.to_i, y_coord.to_i)
 
     reveal_guess(guess, @grid.visible_grid)
     game.update(visible_grid: @grid.visible_grid)
