@@ -1,0 +1,101 @@
+---
+openapi: 3.0.1
+info:
+  title: MineSweeper API V1
+  version: v1
+paths:
+  api/v1/games:
+    post:
+      summary: Creates a game
+      responses:
+        '200':
+          description: Game started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                  game:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      visible_grid:
+                        type: string
+                      mine_grid:
+                        type: string
+                      game_over:
+                        type: boolean
+  api/v1/games/{id}:
+    get:
+      summary: Retrieve game
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Game found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                  game:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      visible_grid:
+                        type: string
+                      mine_grid:
+                        type: string
+                      game_over:
+                        type: boolean
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    put:
+      summary: Make a movement
+      responses:
+        '200':
+          description: Game updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                  game:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      visible_grid:
+                        type: string
+                      mine_grid:
+                        type: string
+                      game_over:
+                        type: boolean
+        '404':
+          description: Game not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
